@@ -3,7 +3,7 @@
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord('Dev18442','incident','33238','abc123','v1');
 
-var self = module.exports = {
+var self = {
     processIncident : function(req, res) {
         switch(req.body.result.action) {
 			case "getIncidentStatus":
@@ -24,7 +24,6 @@ var self = module.exports = {
 				source: '/incident/getstatus'
 			});
 		}).catch(function(error) {
-			console.log(error);
 			return res.json({
 				speech: 'Something went wrong!',
 				displayText: 'Something went wrong!',
@@ -55,3 +54,5 @@ var self = module.exports = {
 		});
 	}
 }
+
+module.exports = self;
