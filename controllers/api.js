@@ -25,6 +25,7 @@ module.exports.createIncident = function(req, res) {
 };
 
 module.exports.getIncidentStatus = function(req, res) {
+	let sysId = req.body.result.parameters.sysid;
 	gr.get('e128dec34f1c13008a812ed18110c745').then(function(result) {
 		let dataToSend = (result.active === "true") ? "Incident status is active" : "Incident status is inactive" ;
 		return res.json({
