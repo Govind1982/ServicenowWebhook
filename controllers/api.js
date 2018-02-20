@@ -3,8 +3,8 @@ const gr = new GlideRecord('Dev18442','incident','33238','abc123','v1');
 
 module.exports.createIncident = function(req, res) {
     var obj = {
-		short_description: "Production Server down",
-		description:"latin words here",
+		short_description: req.body.result.parameters.shortdesc,
+		description:req.body.result.parameters.description,
 		priority:1
 	};
 	
@@ -26,7 +26,7 @@ module.exports.createIncident = function(req, res) {
 
 module.exports.getIncidentStatus = function(req, res) {
 	let sysId = req.body.result.parameters.sysid;
-	gr.get('e128dec34f1c13008a812ed18110c745').then(function(result) {
+	gr.get(sysId).then(function(result) {
 		let dataToSend = (result.active === "true") ? "Incident status is active" : "Incident status is inactive" ;
 		return res.json({
 			speech: dataToSend,
