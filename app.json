@@ -1,6 +1,6 @@
 {
-    "name": "movie_db_webhook",
-    "description": "A very simple webhook that gets you the details of a specified movie.",
+    "name": "Servicenow Webhook",
+    "description": "A very simple webhook that helps you to interact with Servicenow API.",
     "repository": "https://github.com/bimalkumarh/ServicenowWebhook.git",
     "keywords": [
         "api.ai",

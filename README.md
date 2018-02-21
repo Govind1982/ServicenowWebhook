@@ -1,3 +1,3 @@
-# Servicenow Webhook - Get details of a incidents from this webhook.
+# Servicenow Webhook.
 
-A very simple webhook that gets you the details of a specified incident.
+A very simple webhook that interacts with Servicenow API

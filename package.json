@@ -1,24 +1,23 @@
 {
-  "name": "movie_db_webhook",
+  "name": "Servicenow Webhook",
   "version": "1.0.0",
-  "description": "A Node Based Webhook that fetches the details of a movie",
+  "description": "A Node Based Webhook that interacts with Servicenow API",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "movieDb",
     "webhook",
     "nodejs",
-    "siddajmera"
+    "Servicenow"
   ],
-  "author": "Siddharth Ajmera (SiddAjmera)",
+  "author": "Bimal Kumar H",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "dotenv": "^5.0.0",
     "express": "^4.16.1",
-    "servicenow": "^0.5.0",
     "servicenow-rest": "^1.2.2"
   }
 }
