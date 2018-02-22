@@ -14,6 +14,9 @@ var self = {
 				break;
 		}
 	},
+	renderHome: function (req, res) {
+		res.send("Welcome");
+	},
 	getIncidentStatus: function (req, res) {
 		let sysId = req.body.result.parameters.sysid;
 		gr.get(sysId).then(function (result) {
