@@ -120,7 +120,6 @@ var self = {
 		if (received_message.text) {
 			// Create the payload for a basic text message
 			response = {
-				/*"text": `You sent the message: "${received_message.text}". Now send me an image!`,*/
 				attachment: {
 					'type': 'template',
 					'payload': {
@@ -131,14 +130,14 @@ var self = {
 								'image_url': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
 								'buttons': [
 									{
-										'type': 'web_url',
-										'url': 'https://assistant.google.com/',
-										'title': 'This is a button'
+										'type': 'postback',
+										'title': 'Create Incident',
+										'payload': 'ci'
 									},
 									{
-										'type': 'web_url',
-										'url': 'https://assistant.google.com/',
-										'title': 'This is a button'
+										'type': 'postback',
+										'title': 'Get Incident Status',
+										'payload': 'gis'
 									}
 								]
 							}
@@ -153,7 +152,11 @@ var self = {
 	},
 	// Handles messaging_postbacks events
 	handlePostback: function (sender_psid, received_postback) {
+		let response;
 
+		// Get the payload for the postback
+		let payload = received_postback.payload;
+		console.log(payload);
 	},
 	// Sends response messages via the Send API
 	callSendAPI: function (sender_psid, response) {
