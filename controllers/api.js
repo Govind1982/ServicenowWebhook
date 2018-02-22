@@ -120,31 +120,7 @@ var self = {
 		if (received_message.text) {
 			// Create the payload for a basic text message
 			response = {
-				/*"text": `You sent the message: "${received_message.text}". Now send me an image!`,*/
-				attachment: {
-					'type': 'template',
-					'payload': {
-						'template_type': 'generic',
-						'elements': [
-							{
-								'title': 'Title: this is a title',
-								'image_url': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
-								'buttons': [
-									{
-										'type': 'web_url',
-										'url': 'https://assistant.google.com/',
-										'title': 'This is a button'
-									},
-									{
-										'type': 'web_url',
-										'url': 'https://assistant.google.com/',
-										'title': 'This is a button'
-									}
-								]
-							}
-						]
-					}
-				}
+				"text": `You sent the message: "${received_message.text}". Now send me an image!`
 			}
 		}
 
