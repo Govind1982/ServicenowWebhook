@@ -40,7 +40,7 @@ var self = {
 					self.handlePostback(sender_psid, webhook_event.postback);
 				}
 			});
-			
+
 			// Returns a '200 OK' response to all requests
 			res.status(200).send('EVENT_RECEIVED');
 		} else {
@@ -120,7 +120,19 @@ var self = {
 		if (received_message.text) {
 			// Create the payload for a basic text message
 			response = {
-				"text": `You sent the message: "${received_message.text}". Now send me an image!`
+				/*"text": `You sent the message: "${received_message.text}". Now send me an image!`,*/
+				attachment: {
+					type: "template",
+					payload: {
+						template_type: "generic",
+						elements: [
+							{
+								title: 'Kitten',
+								buttons: [{type: 'postback', title: 'More Info', payload: 'More Info'}]
+							}
+						]
+					}
+				}
 			}
 		}
 
