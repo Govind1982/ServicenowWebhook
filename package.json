@@ -1,5 +1,5 @@
 {
-  "name": "Servicenow Webhook",
+  "name": "servicenow-webhook",
   "version": "1.0.0",
   "description": "A Node Based Webhook that interacts with Servicenow API",
   "main": "index.js",
