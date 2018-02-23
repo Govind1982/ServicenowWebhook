@@ -98,7 +98,7 @@ var self = {
 		};
 
 		gr.insert(obj).then(function (response) {
-			let dataToSend = "Incident " + response.number+" is created. Please note for future reference";
+			let dataToSend = "Incident " + response.number + " is created. Please note for future reference";
 			return res.json({
 				speech: dataToSend,
 				displayText: dataToSend,
@@ -158,12 +158,14 @@ var self = {
 		let payload = received_postback.payload;
 		switch (payload) {
 			case "CREATE_INCIDENT":
-			response = {
-				followupEvent: {
-					name: "create_incident_event"
-				},
-				source: "servicenow_agent"
-			};
+				response = {
+					attachment: {
+						followupEvent: {
+							name: "create_incident_event"
+						},
+						source: "servicenow_agent"
+					}
+				};
 				break;
 			case "GET_INCIDENT_STATUS":
 
