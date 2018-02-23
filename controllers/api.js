@@ -159,11 +159,8 @@ var self = {
 		switch (payload) {
 			case "CREATE_INCIDENT":
 				response = {
-					attachment: {
-						followupEvent: {
-							name: "create_incident_event"
-						},
-						source: "servicenow_agent"
+					"followupEvent": {
+						"name": "create_incident_event"
 					}
 				};
 				break;
