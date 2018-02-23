@@ -160,7 +160,7 @@ var self = {
 			case "CREATE_INCIDENT":
 				response = {
 					"followupEvent": {
-						"name": "create_incident_event"
+						"name": "create_incident"
 					}
 				};
 				break;
