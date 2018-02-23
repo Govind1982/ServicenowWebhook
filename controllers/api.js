@@ -92,13 +92,13 @@ var self = {
 	},
 	createIncident: function (req, res) {
 		var obj = {
-			short_description: req.body.result.parameters.shortdesc,
-			description: req.body.result.parameters.description,
-			priority: 1
+			short_description: req.body.result.parameters.shortDescription,
+			impact: req.body.result.parameters.impact,
+			category: req.body.result.parameters.category,
 		};
 
 		gr.insert(obj).then(function (response) {
-			let dataToSend = "Incident created with sys id:" + response.sys_id;
+			let dataToSend = "Incident " + response.number+" is created. Please note for future reference";
 			return res.json({
 				speech: dataToSend,
 				displayText: dataToSend,
@@ -132,12 +132,12 @@ var self = {
 									{
 										'type': 'postback',
 										'title': 'Create Incident',
-										'payload': 'ci'
+										'payload': 'CREATE_INCIDENT'
 									},
 									{
 										'type': 'postback',
 										'title': 'Get Incident Status',
-										'payload': 'gis'
+										'payload': 'GET_INCIDENT_STATUS'
 									}
 								]
 							}
@@ -156,7 +156,20 @@ var self = {
 
 		// Get the payload for the postback
 		let payload = received_postback.payload;
-		console.log(payload);
+		switch (payload) {
+			case "CREATE_INCIDENT":
+			response = {
+				followupEvent: {
+					name: "create_incident_event"
+				}
+			};
+				break;
+			case "GET_INCIDENT_STATUS":
+
+				break;
+		}
+
+		callSendAPI(sender_psid, response);
 	},
 	// Sends response messages via the Send API
 	callSendAPI: function (sender_psid, response) {
