@@ -126,7 +126,7 @@ var self = {
 						'template_type': 'generic',
 						'elements': [
 							{
-								'title': 'Title: this is a title',
+								'title': 'Please choose an item',
 								'image_url': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
 								'buttons': [
 									{
@@ -161,7 +161,8 @@ var self = {
 			response = {
 				followupEvent: {
 					name: "create_incident_event"
-				}
+				},
+				source: "servicenow_agent"
 			};
 				break;
 			case "GET_INCIDENT_STATUS":
