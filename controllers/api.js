@@ -169,7 +169,7 @@ var self = {
 				break;
 		}
 
-		callSendAPI(sender_psid, response);
+		self.callSendAPI(sender_psid, response);
 	},
 	// Sends response messages via the Send API
 	callSendAPI: function (sender_psid, response) {
