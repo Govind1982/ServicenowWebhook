@@ -158,11 +158,20 @@ var self = {
 		let payload = received_postback.payload;
 		switch (payload) {
 			case "CREATE_INCIDENT":
-				response = {
-					"followupEvent": {
-						"name": "create_incident"
+				// Send the HTTP request to the Messenger Platform
+				request({
+					"uri": "https://api.dialogflow.com/v1/query?v=20150910&e=create_incident_event&timezone=Europe/Paris&lang=en&sessionId=1234567890",
+					"method": "GET",
+					"headers": { 
+						'Content-Type' : 'application/x-www-form-urlencoded' 
+					 },
+				}, (err, res, body) => {
+					if (!err) {
+						console.log(res)
+					} else {
+						console.error("Unable to send message:" + err);
 					}
-				};
+				});
 				break;
 			case "GET_INCIDENT_STATUS":
 
