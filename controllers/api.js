@@ -163,7 +163,7 @@ var self = {
 					"uri": "https://api.dialogflow.com/v1/query?v=20150910&e=create_incident_event&timezone=Europe/Paris&lang=en&sessionId=1234567890",
 					"method": "GET",
 					"headers": { 
-						'Content-Type' : 'application/x-www-form-urlencoded' 
+						'Authorization' : 'Bearer '+process.env.DIALOGFLOWAGENT_CLIENT_ACCESS_TOKEN
 					 },
 				}, (err, res, body) => {
 					if (!err) {
