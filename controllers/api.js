@@ -92,13 +92,13 @@ var self = {
 	},
 	createIncident: function (req, res) {
 		var obj = {
-			short_description: req.body.result.parameters.shortdesc,
-			description: req.body.result.parameters.description,
-			priority: 1
+			short_description: req.body.result.parameters.shortDescription,
+			impact: req.body.result.parameters.impact,
+			category: req.body.result.parameters.category,
 		};
 
 		gr.insert(obj).then(function (response) {
-			let dataToSend = "Incident created with sys id:" + response.sys_id;
+			let dataToSend = "Incident " + response.number + " is created. Please note for future reference";
 			return res.json({
 				speech: dataToSend,
 				displayText: dataToSend,
@@ -120,25 +120,24 @@ var self = {
 		if (received_message.text) {
 			// Create the payload for a basic text message
 			response = {
-				/*"text": `You sent the message: "${received_message.text}". Now send me an image!`,*/
 				attachment: {
 					'type': 'template',
 					'payload': {
 						'template_type': 'generic',
 						'elements': [
 							{
-								'title': 'Title: this is a title',
+								'title': 'Please choose an item',
 								'image_url': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
 								'buttons': [
 									{
-										'type': 'web_url',
-										'url': 'https://assistant.google.com/',
-										'title': 'This is a button'
+										'type': 'postback',
+										'title': 'Create Incident',
+										'payload': 'CREATE_INCIDENT'
 									},
 									{
-										'type': 'web_url',
-										'url': 'https://assistant.google.com/',
-										'title': 'This is a button'
+										'type': 'postback',
+										'title': 'Get Incident Status',
+										'payload': 'GET_INCIDENT_STATUS'
 									}
 								]
 							}
@@ -153,7 +152,33 @@ var self = {
 	},
 	// Handles messaging_postbacks events
 	handlePostback: function (sender_psid, received_postback) {
+		let response;
 
+		// Get the payload for the postback
+		let payload = received_postback.payload;
+		switch (payload) {
+			case "CREATE_INCIDENT":
+				// Send the HTTP request to the Messenger Platform
+				request({
+					"uri": "https://api.dialogflow.com/v1/query?v=20150910&e=create_incident_event&timezone=Europe/Paris&lang=en&sessionId=1234567890",
+					"method": "GET",
+					"headers": { 
+						'Content-Type' : 'application/x-www-form-urlencoded' 
+					 },
+				}, (err, res, body) => {
+					if (!err) {
+						console.log(res)
+					} else {
+						console.error("Unable to send message:" + err);
+					}
+				});
+				break;
+			case "GET_INCIDENT_STATUS":
+
+				break;
+		}
+
+		self.callSendAPI(sender_psid, response);
 	},
 	// Sends response messages via the Send API
 	callSendAPI: function (sender_psid, response) {
