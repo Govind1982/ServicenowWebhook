@@ -168,7 +168,9 @@ var self = {
 
 
 		response = {
-			"text": res.body.fulfillment.speech
+			attachment: {
+				"text": res.body.fulfillment.speech
+			}
 		};
 
 
