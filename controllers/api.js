@@ -167,11 +167,38 @@ var self = {
 		}
 
 
-		response = {
+		/*response = {
 			attachment: {
 				"text": res.body.fulfillment.speech+"xxxxxxxxxxxxxxxxx"
 			}
-		};
+		};*/
+
+
+		response = {
+			attachment: {
+				'type': 'template',
+				'payload': {
+					'template_type': 'generic',
+					'elements': [
+						{
+							'title': 'XXXXXXXXXXXXXXXXXX',
+							'buttons': [
+								{
+									'type': 'postback',
+									'title': 'Create Incident',
+									'payload': 'CREATE_INCIDENT'
+								},
+								{
+									'type': 'postback',
+									'title': 'Get Incident Status',
+									'payload': 'GET_INCIDENT_STATUS'
+								}
+							]
+						}
+					]
+				}
+			}
+		}
 
 
 
