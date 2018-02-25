@@ -166,6 +166,7 @@ var self = {
 				break;
 		}
 
+		console.log(res.fulfillment);
 
 		response = {
 				"text": res.body.fulfillment.speech
