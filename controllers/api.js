@@ -166,7 +166,7 @@ var self = {
 				break;
 		}
 
-		console.log(received_postback);
+		console.log(res);
 
 		response = {
 				"text": "XXXXXXXXXXXXXXXXXX"
