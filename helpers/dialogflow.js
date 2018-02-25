@@ -39,7 +39,7 @@ var self = {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(body);
+                    resolve(resp);
                 }
             })
         })
