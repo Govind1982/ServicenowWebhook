@@ -1,6 +1,6 @@
 'use strict';
 
-//var dialogflowHelper = require('./helpers/dialogflow');
+var dialogflowHelper = require('../helpers/dialogflow');
 const request = require('request');
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
@@ -159,12 +159,18 @@ var self = {
 		let payload = received_postback.payload;
 		switch (payload) {
 			case "CREATE_INCIDENT":
-				
+			response = dialogflowHelper.invokeCreateIncidentEvent();
 				break;
 			case "GET_INCIDENT_STATUS":
 
 				break;
 		}
+
+
+
+		
+
+
 
 		self.callSendAPI(sender_psid, response);
 	},
@@ -178,20 +184,19 @@ var self = {
 			"message": response
 		}
 
-		//dialogflowHelper.invokeCreateIncidentEvent(request_body);
+		// Send the HTTP request to the Messenger Platform
 		request({
-            "uri": "https://api.dialogflow.com/v1/query?v=20150910&e=create_incident_event&timezone=Europe/Paris&lang=en&sessionId=1234567890",
-            "method": "GET",
-            "headers": {
-                'Authorization': 'Bearer ' + process.env.DIALOGFLOWAGENT_CLIENT_ACCESS_TOKEN
-            },
-        }, (err, res, body) => {
-            if (!err) {
-                console.log(res.body);
-            } else {
-                console.error("Unable to send message:" + err);
-            }
-        });
+			"uri": "https://graph.facebook.com/v2.6/me/messages",
+			"qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
+			"method": "POST",
+			"json": request_body
+		}, (err, res, body) => {
+			if (!err) {
+				console.log('message sent!')
+			} else {
+				console.error("Unable to send message:" + err);
+			}
+		});
 	}
 }
 

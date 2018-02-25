@@ -11,7 +11,7 @@ var self = {
             },
         }, (err, res, body) => {
             if (!err) {
-                console.log(res.body);
+               return res;
             } else {
                 console.error("Unable to send message:" + err);
             }
