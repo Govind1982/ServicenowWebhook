@@ -169,7 +169,7 @@ var self = {
 
 		response = {
 			attachment: {
-				"text": res.body.fulfillment.speech
+				"text": res.body.fulfillment.speech+"xxxxxxxxxxxxxxxxx"
 			}
 		};
 
