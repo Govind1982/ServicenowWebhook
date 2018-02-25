@@ -159,7 +159,7 @@ var self = {
 		let payload = received_postback.payload;
 		switch (payload) {
 			case "CREATE_INCIDENT":
-			response = dialogflowHelper.invokeCreateIncidentEvent();
+			//response = dialogflowHelper.invokeCreateIncidentEvent();
 				break;
 			case "GET_INCIDENT_STATUS":
 
@@ -167,7 +167,14 @@ var self = {
 		}
 
 
-
+		response = {
+			"recipient":{
+			  "id":sender_psid
+			},
+			"message":{
+			  "text": "Here is a quick reply!"			  
+			}
+		  };
 		
 
 
