@@ -172,7 +172,7 @@ var self = {
 				"text": "XXXXXXXXXXXXXXXXXX"
 		}
 
-		console.log(res);
+		console.log(res.body.fulfillment.speech);
 		
 
 
