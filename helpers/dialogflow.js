@@ -1,5 +1,7 @@
 'use strict';
 
+const request = require('request');
+
 var self = {
     invokeCreateIncidentEvent: function (request_body) {
         // Send the HTTP request to the Messenger Platform
