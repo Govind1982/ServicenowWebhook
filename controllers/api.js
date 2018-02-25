@@ -27,7 +27,7 @@ var self = {
 
 				// Gets the body of the webhook event
 				let webhook_event = entry.messaging[0];
-				//console.log(webhook_event);
+				console.log(webhook_event);
 
 				// Get the sender PSID
 				let sender_psid = webhook_event.sender.id;
@@ -154,7 +154,7 @@ var self = {
 	// Handles messaging_postbacks events
 	handlePostback: function (sender_psid, received_postback) {
 		let response;
-		let res;
+		let res  = {};
 		// Get the payload for the postback
 		let payload = received_postback.payload;
 		switch (payload) {
@@ -166,13 +166,13 @@ var self = {
 				break;
 		}
 
-		console.log(res);
+		console.log(received_postback);
 
 		response = {
 				"text": "XXXXXXXXXXXXXXXXXX"
 		}
 
-
+		console.log(res);
 		
 
 
