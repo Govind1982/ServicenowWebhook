@@ -13,8 +13,6 @@ var self = {
             },
         }, (err, res, body) => {
             if (!err) {
-                console.log("XXXXXXXXXXXXXXXXX");
-                console.log(res);
                return res;
             } else {
                 console.error("Unable to send message:" + err);
