@@ -167,38 +167,12 @@ var self = {
 		}
 
 
-		/*response = {
-			attachment: {
-				"text": res.body.fulfillment.speech+"xxxxxxxxxxxxxxxxx"
-			}
-		};*/
-
-
 		response = {
-			attachment: {
-				'type': 'template',
-				'payload': {
-					'template_type': 'generic',
-					'elements': [
-						{
-							'title': 'XXXXXXXXXXXXXXXXXX',
-							'buttons': [
-								{
-									'type': 'postback',
-									'title': 'Create Incident',
-									'payload': 'CREATE_INCIDENT'
-								},
-								{
-									'type': 'postback',
-									'title': 'Get Incident Status',
-									'payload': 'GET_INCIDENT_STATUS'
-								}
-							]
-						}
-					]
-				}
-			}
+				"text": "xxxxxxxxxxxxxxxxx"
 		}
+
+
+		
 
 
 
@@ -214,7 +188,7 @@ var self = {
 			},
 			"message": response
 		}
-
+console.log(request_body);
 		// Send the HTTP request to the Messenger Platform
 		request({
 			"uri": "https://graph.facebook.com/v2.6/me/messages",
