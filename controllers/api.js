@@ -154,7 +154,6 @@ var self = {
 	// Handles messaging_postbacks events
 	handlePostback: function (sender_psid, received_postback) {
 		let response;
-		let res  = {};
 		// Get the payload for the postback
 		let payload = received_postback.payload;
 		switch (payload) {
