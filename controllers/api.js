@@ -1,6 +1,6 @@
 'use strict';
 
-var dialogflowHelper = require('../helpers/dialogflow');
+var apiai = require('apiai');
 const request = require('request');
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
@@ -36,9 +36,9 @@ var self = {
 				// Check if the event is a message or postback and
 				// pass the event to the appropriate handler function
 				if (webhook_event.message) {
-					self.handleMessage(sender_psid, webhook_event.message);
+					self.handleMessage(webhook_event);
 				} else if (webhook_event.postback) {
-					self.handlePostback(sender_psid, webhook_event.postback);
+					self.handlePostback(webhook_event);
 				}
 			});
 
@@ -114,7 +114,7 @@ var self = {
 		});
 	},
 	// Handles messages events
-	handleMessage: function (sender_psid, received_message) {
+	handleMessage: function (webhook_event) {
 		let response;
 
 		// Check if the message contains text
@@ -149,41 +149,31 @@ var self = {
 		}
 
 		// Sends the response message
-		self.callSendAPI(sender_psid, response);
+		self.callSendAPI(event);
 	},
 	// Handles messaging_postbacks events
-	handlePostback: function (sender_psid, received_postback) {
+	handlePostback: function (event) {
 		let response;
-		let res;
 		// Get the payload for the postback
 		let payload = received_postback.payload;
 		switch (payload) {
 			case "CREATE_INCIDENT":
-				res = dialogflowHelper.invokeCreateIncidentEvent();
+				//res = dialogflowHelper.invokeCreateIncidentEvent();
+				response = {
+				}
 				break;
 			case "GET_INCIDENT_STATUS":
 
 				break;
 		}
-
-		console.log(res);
-
-		response = {
-				"text": "XXXXXXXXXXXXXXXXXX"
-		}
-
-		console.log(res.body.fulfillment.speech);
-		
-
-
-
-
-		self.callSendAPI(sender_psid, response);
+		self.callSendAPI(event);
 	},
 	// Sends response messages via the Send API
-	callSendAPI: function (sender_psid, response) {
+	callSendAPI: function (event) {
+		let sender = event.sender.id;
+  		let text = event.message.text;
 		// Construct the message body
-		let request_body = {
+		/*let request_body = {
 			"recipient": {
 				"id": sender_psid
 			},
@@ -201,7 +191,38 @@ var self = {
 			} else {
 				console.error("Unable to send message:" + err);
 			}
+		});*/
+
+		let apiai = apiaiApp.textRequest(text, {
+			sessionId: 'tabby_cat'
 		});
+
+		apiai.on('response', (response) => {
+			console.log(response)
+			let aiText = response.result.fulfillment.speech;
+
+			request({
+				'url': 'https://graph.facebook.com/v2.6/me/messages',
+				'qs': { access_token: PAGE_ACCESS_TOKEN },
+				'method': 'POST',
+				'json': {
+					recipient: { id: sender },
+					message: { text: aiText }
+				}
+			}, (error, response) => {
+				if (error) {
+					console.log('Error sending message: ', error);
+				} else if (response.body.error) {
+					console.log('Error: ', response.body.error);
+				}
+			});
+		});
+
+		apiai.on('error', (error) => {
+			console.log(error);
+		});
+
+		apiai.end();
 	}
 }
 
