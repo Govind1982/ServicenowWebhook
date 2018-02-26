@@ -118,7 +118,7 @@ var self = {
 		let response;
 
 		// Check if the message contains text
-		if (received_message.text) {
+		if (webhook_event.text) {
 			// Create the payload for a basic text message
 			response = {
 				attachment: {
