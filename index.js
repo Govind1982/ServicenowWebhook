@@ -1,7 +1,6 @@
 'use strict';
 
 require('dotenv').config();
-'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 const APIAI_TOKEN = process.env.DIALOGFLOWAGENT_CLIENT_ACCESS_TOKEN;
 
@@ -22,7 +21,7 @@ const apiaiApp = apiai(process.env.DIALOGFLOWAGENT_CLIENT_ACCESS_TOKEN);
 
 /* For Facebook Validation */
 app.get('/webhook', (req, res) => {
-    if (req.query['hub.mode'] && req.query['hub.verify_token'] === 'tuxedo_cat') {
+    if (req.query['hub.mode'] && req.query['hub.verify_token'] === process.env.VERIFY_TOKEN) {
         res.status(200).send(req.query['hub.challenge']);
     } else {
         res.status(403).end();
