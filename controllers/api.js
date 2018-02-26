@@ -1,5 +1,6 @@
 'use strict';
 
+var dialogflowHelper = require('../helpers/dialogflow');
 const request = require('request');
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
@@ -30,7 +31,7 @@ var self = {
 
 				// Get the sender PSID
 				let sender_psid = webhook_event.sender.id;
-				console.log('Sender PSID: ' + sender_psid);
+				//console.log('Sender PSID: ' + sender_psid);
 
 				// Check if the event is a message or postback and
 				// pass the event to the appropriate handler function
@@ -64,7 +65,7 @@ var self = {
 			if (mode === 'subscribe' && token === VERIFY_TOKEN) {
 
 				// Responds with the challenge token from the request
-				console.log('WEBHOOK_VERIFIED');
+				//console.log('WEBHOOK_VERIFIED');
 				res.status(200).send(challenge);
 
 			} else {
@@ -153,30 +154,29 @@ var self = {
 	// Handles messaging_postbacks events
 	handlePostback: function (sender_psid, received_postback) {
 		let response;
-
+		let res;
 		// Get the payload for the postback
 		let payload = received_postback.payload;
 		switch (payload) {
 			case "CREATE_INCIDENT":
-				// Send the HTTP request to the Messenger Platform
-				request({
-					"uri": "https://api.dialogflow.com/v1/query?v=20150910&e=create_incident_event&timezone=Europe/Paris&lang=en&sessionId=1234567890",
-					"method": "GET",
-					"headers": { 
-						'Content-Type' : 'application/x-www-form-urlencoded' 
-					 },
-				}, (err, res, body) => {
-					if (!err) {
-						console.log(res)
-					} else {
-						console.error("Unable to send message:" + err);
-					}
-				});
+				res = dialogflowHelper.invokeCreateIncidentEvent();
 				break;
 			case "GET_INCIDENT_STATUS":
 
 				break;
 		}
+
+		console.log(res);
+
+		response = {
+				"text": "XXXXXXXXXXXXXXXXXX"
+		}
+
+		console.log(res.body.fulfillment.speech);
+		
+
+
+
 
 		self.callSendAPI(sender_psid, response);
 	},
@@ -189,7 +189,6 @@ var self = {
 			},
 			"message": response
 		}
-
 		// Send the HTTP request to the Messenger Platform
 		request({
 			"uri": "https://graph.facebook.com/v2.6/me/messages",
