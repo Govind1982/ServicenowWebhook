@@ -155,7 +155,7 @@ var self = {
 	handlePostback: function (event) {
 		let response;
 		// Get the payload for the postback
-		let payload = received_postback.payload;
+		let payload = event.payload;
 		switch (payload) {
 			case "CREATE_INCIDENT":
 				//res = dialogflowHelper.invokeCreateIncidentEvent();
