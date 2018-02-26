@@ -22,7 +22,7 @@ var self = {
 	webhookEndpoint: function (req, res) {
 		try {
 			const data = JSONbig.parse(req.body);
-
+console.log(data);
 			if (data.entry) {
 				let entries = data.entry;
 				entries.forEach((entry) => {
