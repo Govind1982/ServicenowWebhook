@@ -21,6 +21,10 @@
     "express": "^4.16.1",
     "promise": "^8.0.1",
     "request": "^2.83.0",
-    "servicenow-rest": "^1.2.2"
+    "servicenow-rest": "^1.2.2",
+    "async": "^2.0.0",
+    "html-entities": "^1.2.0",
+    "json-bigint": "^0.2.0",
+    "uuid": "^3.0.1"
   }
 }
