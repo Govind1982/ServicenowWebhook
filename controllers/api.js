@@ -14,6 +14,8 @@ var self = {
 				entry.messaging.forEach((event) => {
 					if (event.message && event.message.text) {
 						self.sendMessage(event);
+					} else if (event.postback && event.postback.payload) {
+						console.log(event.postback.payload);
 					}
 				});
 			});
