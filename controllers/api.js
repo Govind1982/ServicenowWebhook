@@ -8,12 +8,11 @@ const apiaiApp = apiai(process.env.DIALOGFLOW_CLIENT_ACCESS_TOKEN);
 
 var self = {
 	webhookEndpoint: function (req, res) {
-		if (req.body.object === 'page') {
-			let sender = event.sender.id;
+		if (req.body.object === 'page') {			
 			req.body.entry.forEach((entry) => {
 				entry.messaging.forEach((event) => {
-					if (event.message && event.message.text) {
-						
+					let sender = event.sender.id;
+					if (event.message && event.message.text) {						
 						let text = event.message.text;
 						self.sendMessage(event, sender, text);
 					} else if (event.postback && event.postback.payload) {
