@@ -28,6 +28,7 @@ var self = {
 								var apiai = apiaiApp.eventRequest(event, options);
 								console.log("postback");
 								apiai.on('response', function (response) {
+									console.console(response);
 									if (this.isDefined(response.result) && this.isDefined(response.result.fulfillment)) {
 										let responseText = response.result.fulfillment.speech;
 										let responseData = response.result.fulfillment.data;
@@ -44,6 +45,7 @@ var self = {
 								apiai.on('error', function (error) {
 									console.log(error);
 								});
+								apiai.end();
 								break;
 						}
 					}
