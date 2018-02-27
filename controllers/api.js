@@ -13,11 +13,7 @@ var self = {
 			req.body.entry.forEach((entry) => {
 				entry.messaging.forEach((event) => {
 					if (event.message && event.message.text) {
-						if(typeof req.body.result.action !== 'undefined'  && req.body.result.action === "input.welcome") {
-							self.dislplayWelcomeCard(event);
-						} else {
-							self.sendMessage(event);
-						}
+						self.sendMessage(event);
 					}
 				});
 			});
