@@ -8,16 +8,12 @@ const apiaiApp = apiai(process.env.DIALOGFLOW_CLIENT_ACCESS_TOKEN);
 
 var self = {
 	webhookEndpoint: function (req, res) {
-		console.log(req.body);
+		console.log(req.body.result.action);
 		if (req.body.object === 'page') {
 			req.body.entry.forEach((entry) => {
 				entry.messaging.forEach((event) => {
 					if (event.message && event.message.text) {
-						if(typeof req.body.result.action !== 'undefined'  && req.body.result.action === "input.welcome") {
-							self.dislplayWelcomeCard(event);
-						} else {
-							self.sendMessage(event);
-						}
+						self.sendMessage(event);
 					}
 				});
 			});
