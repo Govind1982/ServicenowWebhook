@@ -25,13 +25,13 @@ var self = {
 									sessionId: '1234567890'
 								};
 
-								var request = apiaiApp.eventRequest(event, options);
+								var apiai = apiaiApp.eventRequest(event, options);
 
-								request.on('response', function (response) {
-									console.log(util.inspect(response, false, null));
+								apiai.on('response', function (response) {
+									console.log(util.inspect(response.messaging, false, null));
 								});
 
-								request.on('error', function (error) {
+								apiai.on('error', function (error) {
 									console.log(error);
 								});
 								break;
