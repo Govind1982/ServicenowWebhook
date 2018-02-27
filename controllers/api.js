@@ -1,11 +1,10 @@
 'use strict';
 
-require('../libraries/FacebookBot');
 var apiai = require('apiai');
 const request = require('request');
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
-let facebookBot = new FacebookBot();
+var facebookBot = require('../helpers/FacebookBot');
 
 var self = {
 	webhookEndpoint: function (req, res) {
@@ -67,7 +66,7 @@ var self = {
 	webhookVerification: function (req, res) {
 		let VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN;
 
-		if (req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
+		if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
 			res.send(req.query['hub.challenge']);
 		} else {
 			res.send('Error, wrong validation token');
