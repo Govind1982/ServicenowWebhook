@@ -78,7 +78,7 @@ var self = {
 		}
 	},
 	dislplayWelcomeCard: function (req, res) {
-		/*let response = res.json({
+		res.json({
 			"message": {
 				"attachment": {
 					"type": "template",
@@ -105,8 +105,7 @@ var self = {
 					}
 				}
 			}
-		});*/
-		console.log(req);
+		});
 	},
 	getIncidentStatus: function (req, res) {
 		let sysId = req.body.result.parameters.sysid;
