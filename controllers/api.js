@@ -36,24 +36,27 @@ var self = {
 		});
 
 		apiai.on('response', (response) => {
-			console.log("aaaaaaaaaa")
-			let aiText = response.result.fulfillment.speech;
+			if (response.result.action === "input.welcome") {
+				self.dislplayWelcomeCard(event);
+			} else {
+				let aiText = response.result.fulfillment.speech;
 
-			request({
-				url: 'https://graph.facebook.com/v2.6/me/messages',
-				qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
-				method: 'POST',
-				json: {
-					recipient: { id: sender },
-					message: { text: aiText }
-				}
-			}, (error, response) => {
-				if (error) {
-					console.log('Error sending message: ', error);
-				} else if (response.body.error) {
-					console.log('Error: ', response.body.error);
-				}
-			});
+				request({
+					url: 'https://graph.facebook.com/v2.6/me/messages',
+					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
+					method: 'POST',
+					json: {
+						recipient: { id: sender },
+						message: { text: aiText }
+					}
+				}, (error, response) => {
+					if (error) {
+						console.log('Error sending message: ', error);
+					} else if (response.body.error) {
+						console.log('Error: ', response.body.error);
+					}
+				});
+			}
 		});
 
 		apiai.on('error', (error) => {
@@ -62,30 +65,30 @@ var self = {
 
 		apiai.end();
 	},
-	sendRichContentResponse: function(event, messageData) {
+	sendRichContentResponse: function (event, messageData) {
 		let sender = event.sender.id;
-        return new Promise((resolve, reject) => {
-            request({
-                url: 'https://graph.facebook.com/v2.6/me/messages',
-                qs: {access_token: FB_PAGE_ACCESS_TOKEN},
-                method: 'POST',
-                json: {
-                    recipient: {id: sender},
-                    message: messageData
-                }
-            }, (error, response) => {
-                if (error) {
-                    console.log('Error sending message: ', error);
-                    reject(error);
-                } else if (response.body.error) {
-                    console.log('Error: ', response.body.error);
-                    reject(new Error(response.body.error));
-                }
+		return new Promise((resolve, reject) => {
+			request({
+				url: 'https://graph.facebook.com/v2.6/me/messages',
+				qs: { access_token: FB_PAGE_ACCESS_TOKEN },
+				method: 'POST',
+				json: {
+					recipient: { id: sender },
+					message: messageData
+				}
+			}, (error, response) => {
+				if (error) {
+					console.log('Error sending message: ', error);
+					reject(error);
+				} else if (response.body.error) {
+					console.log('Error: ', response.body.error);
+					reject(new Error(response.body.error));
+				}
 
-                resolve();
-            });
-        });
-    },
+				resolve();
+			});
+		});
+	},
 	processIncident: function (req, res) {
 		switch (req.body.result.action) {
 			case "getIncidentStatus":
