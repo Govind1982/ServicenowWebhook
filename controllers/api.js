@@ -8,6 +8,7 @@ const apiaiApp = apiai(process.env.DIALOGFLOW_CLIENT_ACCESS_TOKEN);
 
 var self = {
 	webhookEndpoint: function (req, res) {
+		console.log(req.body);
 		if (req.body.object === 'page') {
 			req.body.entry.forEach((entry) => {
 				entry.messaging.forEach((event) => {
