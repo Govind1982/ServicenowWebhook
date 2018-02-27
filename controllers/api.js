@@ -13,7 +13,11 @@ var self = {
 			req.body.entry.forEach((entry) => {
 				entry.messaging.forEach((event) => {
 					if (event.message && event.message.text) {
-						self.sendMessage(event);
+						if(req.body.result.action === "input.welcome") {
+							self.dislplayWelcomeCard(event);
+						} else {
+							self.sendMessage(event);
+						}
 					}
 				});
 			});
@@ -22,7 +26,6 @@ var self = {
 	},
 	webhookVerification: function (req, res) {
 		let VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN;
-
 		if (req.query['hub.verify_token'] === VERIFY_TOKEN) {
 			res.send(req.query['hub.challenge']);
 		} else {
@@ -64,6 +67,30 @@ var self = {
 
 		apiai.end();
 	},
+	sendRichContentResponse: function(event, messageData) {
+		let sender = event.sender.id;
+        return new Promise((resolve, reject) => {
+            request({
+                url: 'https://graph.facebook.com/v2.6/me/messages',
+                qs: {access_token: FB_PAGE_ACCESS_TOKEN},
+                method: 'POST',
+                json: {
+                    recipient: {id: sender},
+                    message: messageData
+                }
+            }, (error, response) => {
+                if (error) {
+                    console.log('Error sending message: ', error);
+                    reject(error);
+                } else if (response.body.error) {
+                    console.log('Error: ', response.body.error);
+                    reject(new Error(response.body.error));
+                }
+
+                resolve();
+            });
+        });
+    },
 	processIncident: function (req, res) {
 		switch (req.body.result.action) {
 			case "getIncidentStatus":
@@ -72,36 +99,38 @@ var self = {
 			case "createIncident":
 				self.createIncident(req, res);
 				break;
-			case "input.welcome":
-				self.dislplayWelcomeCard(req, res);
-				break;
 		}
 	},
-	dislplayWelcomeCard: function (req, res) {
-		 res.json({
-			"speech": "",
-			"messages": [{
-				  "type": 1,
-				  "platform": "facebook",
-				  'title': 'Please choose an item',
-				  "subtitle": "Thank you for using me, I can help you please choose any one option",
-				  'imageUrl': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
-				  "buttons": [
-					{
-					  "text": "Create Incident",
-					  "postback": "Create Incident"
-					},
-					{
-					  "text": "Track Incident",
-					  "postback": ""
+	dislplayWelcomeCard: function (event) {
+		let messageData = {
+			"message": {
+				"attachment": {
+					"type": "template",
+					"payload": {
+						"template_type": "generic",
+						"elements": [
+							{
+								'title': 'Please choose an item',
+								'image_url': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
+								'buttons': [
+									{
+										'type': 'postback',
+										'title': 'Create Incident',
+										'payload': 'CREATE_INCIDENT'
+									},
+									{
+										'type': 'postback',
+										'title': 'Get Incident Status',
+										'payload': 'GET_INCIDENT_STATUS'
+									}
+								]
+							}
+						]
 					}
-				  ]
-				},				 
-				{
-					"type": 0,
-					"speech": ""
-				}]
-		});
+				}
+			}
+		};
+		self.sendRichContentResponse(event, messageData)
 	},
 	getIncidentStatus: function (req, res) {
 		let sysId = req.body.result.parameters.sysid;
