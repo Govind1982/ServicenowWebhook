@@ -15,7 +15,11 @@ var self = {
 					if (event.message && event.message.text) {
 						self.sendMessage(event);
 					} else if (event.postback && event.postback.payload) {
-						console.log(event.postback.payload);
+						switch (event.postback.payload) {
+							case "CREATE_INCIDENT":
+
+								break;
+						}
 					}
 				});
 			});
@@ -91,6 +95,14 @@ var self = {
 				resolve();
 			});
 		});
+	},
+	invokeCreateIncidentEvent: function () {
+		let messageData = {
+			"followupEvent": {
+				"name": "create_incident_event"
+			}
+		};
+		self.sendRichContentResponse(event, messageData);
 	},
 	processIncident: function (req, res) {
 		switch (req.body.result.action) {
