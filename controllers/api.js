@@ -18,29 +18,7 @@ var self = {
 					} else if (event.postback && event.postback.payload) {
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
-								var event = {
-									name: "create_incident_event"
-								};
-
-								var options = {
-									sessionId: '1234567890'
-								};
-
-								var apiai = apiaiApp.eventRequest(event, options);
-								console.log("postback");
-								apiai.on('response', function (response) {
-									console.log(response);
-									if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
-										let responseText = response.result.fulfillment.speech;
-										let text = responseText;
-										self.sendMessage(event, sender, text);
-									}
-								});
-
-								apiai.on('error', function (error) {
-									console.log(error);
-								});
-								apiai.end();
+							self.invokeCreateIncidentEvent(event, sender);
 								break;
 						}
 					}
@@ -116,13 +94,29 @@ var self = {
 			});
 		});
 	},
-	invokeCreateIncidentEvent: function (event) {
-		let messageData = {
-			"followupEvent": {
-				"name": "create_incident_event"
-			}
+	invokeCreateIncidentEvent: function (event, sender) {
+		var eventInfo = {
+			name: "create_incident_event"
 		};
-		self.sendRichContentResponse(event, messageData);
+
+		var options = {
+			sessionId: '1234567890'
+		};
+
+		var apiai = apiaiApp.eventRequest(eventInfo, options);
+		apiai.on('response', function (response) {
+			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
+				let responseText = response.result.fulfillment.speech;
+				let text = responseText;
+				self.sendMessage(event, sender, text);
+			}
+		});
+
+		apiai.on('error', function (error) {
+			console.log(error);
+		});
+
+		apiai.end();
 	},
 	processIncident: function (req, res) {
 		switch (req.body.result.action) {
