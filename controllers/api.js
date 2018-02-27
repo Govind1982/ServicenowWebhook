@@ -25,7 +25,7 @@ var self = {
 									sessionId: '1234567890'
 								};
 
-								var request = app.eventRequest(event, options);
+								var request = apiaiApp.eventRequest(event, options);
 
 								request.on('response', function (response) {
 									console.log(util.inspect(response, false, null));
