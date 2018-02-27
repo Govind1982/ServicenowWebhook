@@ -6,7 +6,7 @@ const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
 var facebookBot = require('../helpers/FacebookBot');
 
-module.exports = {
+var self = {
 	webhookEndpoint: function (req, res) {
 		console.log(req.body);
 		if (req.body.object === 'page') {
@@ -114,3 +114,5 @@ module.exports = {
 		});
 	}
 }
+
+module.exports = self;
