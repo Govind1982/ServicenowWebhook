@@ -29,14 +29,12 @@ var self = {
 								console.log("postback");
 								apiai.on('response', function (response) {
 									console.log(response);
-									if (this.isDefined(response.result) && this.isDefined(response.result.fulfillment)) {
+									if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
 										let responseText = response.result.fulfillment.speech;
 										let responseData = response.result.fulfillment.data;
 										let responseMessages = response.result.fulfillment.messages;
-						
-										console.log(responseText);
-										console.log(responseData);
-										console.log(responseMessages);
+										event.message.text = responseText;
+										self.sendMessage(event);
 									} else {
 										console.log("ddddd out");
 									}
@@ -209,7 +207,18 @@ var self = {
 				source: '/incident/create'
 			});
 		});
-	}
+	},
+	isDefined: function (obj) {
+        if (typeof obj == 'undefined') {
+            return false;
+        }
+
+        if (!obj) {
+            return false;
+        }
+
+        return obj != null;
+    }
 }
 
 module.exports = self;
