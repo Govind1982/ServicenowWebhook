@@ -72,7 +72,40 @@ var self = {
 			case "createIncident":
 				self.createIncident(req, res);
 				break;
+			case "input.welcome":
+				self.dislplayWelcomeCard(req, res);
+				break;
 		}
+	},
+	dislplayWelcomeCard: function (req, res) {
+		let response = res.json({
+			"message": {
+				"attachment": {
+					"type": "template",
+					"payload": {
+						"template_type": "generic",
+						"elements": [
+							{
+								'title': 'Please choose an item',
+								'image_url': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
+								'buttons': [
+									{
+										'type': 'postback',
+										'title': 'Create Incident',
+										'payload': 'CREATE_INCIDENT'
+									},
+									{
+										'type': 'postback',
+										'title': 'Get Incident Status',
+										'payload': 'GET_INCIDENT_STATUS'
+									}
+								]
+							}
+						]
+					}
+				}
+			}
+		});
 	},
 	getIncidentStatus: function (req, res) {
 		let sysId = req.body.result.parameters.sysid;
