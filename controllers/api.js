@@ -33,8 +33,7 @@ var self = {
 										let responseText = response.result.fulfillment.speech;
 										let responseData = response.result.fulfillment.data;
 										let responseMessages = response.result.fulfillment.messages;
-										event.message.text = responseText;
-										self.sendMessage(event);
+										console.log(responseText);
 									} else {
 										console.log("ddddd out");
 									}
