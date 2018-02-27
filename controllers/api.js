@@ -14,7 +14,7 @@ var self = {
 					if (event.message && event.message.text) {
 						let sender = event.sender.id;
 						let text = event.message.text;
-						self.sendMessage(sender, text);
+						self.sendMessage(event, sender, text);
 					} else if (event.postback && event.postback.payload) {
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
@@ -34,7 +34,7 @@ var self = {
 										let responseText = response.result.fulfillment.speech;
 										let sender = event.sender.id;
 										let text = responseText;
-										self.sendMessage(sender, text);
+										self.sendMessage(event, sender, text);
 									}
 								});
 
@@ -58,7 +58,7 @@ var self = {
 			res.send('Error, wrong validation token');
 		}
 	},
-	sendMessage: function (sender, text) {
+	sendMessage: function (event, sender, text) {
 		let apiai = apiaiApp.textRequest(text, {
 			sessionId: '1234567890'
 		});
