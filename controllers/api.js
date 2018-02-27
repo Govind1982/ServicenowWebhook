@@ -106,6 +106,7 @@ var self = {
 		var apiai = apiaiApp.eventRequest(eventInfo, options);
 		apiai.on('response', function (response) {
 			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
+				console.log(response.result);
 				let responseText = response.result.fulfillment.speech;
 				let text = responseText;
 				self.sendMessage(event, sender, text);
