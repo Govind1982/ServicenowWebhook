@@ -6,61 +6,18 @@ const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
 var facebookBot = require('../helpers/FacebookBot');
 
-var self = {
+module.exports = {
 	webhookEndpoint: function (req, res) {
-		try {
-			const data = JSONbig.parse(req.body);
-
-			if (data.entry) {
-				let entries = data.entry;
-				entries.forEach((entry) => {
-					let messaging_events = entry.messaging;
-					if (messaging_events) {
-						messaging_events.forEach((event) => {
-							if (event.message && !event.message.is_echo) {
-
-								if (event.message.attachments) {
-									let locations = event.message.attachments.filter(a => a.type === "location");
-
-									// delete all locations from original message
-									event.message.attachments = event.message.attachments.filter(a => a.type !== "location");
-
-									if (locations.length > 0) {
-										locations.forEach(l => {
-											let locationEvent = {
-												sender: event.sender,
-												postback: {
-													payload: "FACEBOOK_LOCATION",
-													data: l.payload.coordinates
-												}
-											};
-
-											facebookBot.processFacebookEvent(locationEvent);
-										});
-									}
-								}
-
-								facebookBot.processMessageEvent(event);
-							} else if (event.postback && event.postback.payload) {
-								if (event.postback.payload === "FACEBOOK_WELCOME") {
-									facebookBot.processFacebookEvent(event);
-								} else {
-									facebookBot.processMessageEvent(event);
-								}
-							}
-						});
+		console.log(req.body);
+		if (req.body.object === 'page') {
+			req.body.entry.forEach((entry) => {
+				entry.messaging.forEach((event) => {
+					if (event.message && event.message.text) {
+						self.sendMessage(event);
 					}
 				});
-			}
-
-			return res.status(200).json({
-				status: "ok"
 			});
-		} catch (err) {
-			return res.status(400).json({
-				status: "error",
-				error: err
-			});
+			res.status(200).end();
 		}
 	},
 	webhookVerification: function (req, res) {
@@ -71,6 +28,41 @@ var self = {
 		} else {
 			res.send('Error, wrong validation token');
 		}
+	},
+	sendMessage: function (event) {
+		let sender = event.sender.id;
+		let text = event.message.text;
+
+		let apiai = apiaiApp.textRequest(text, {
+			sessionId: '1234567890'
+		});
+
+		apiai.on('response', (response) => {
+			console.log(response)
+			let aiText = response.result.fulfillment.speech;
+
+			request({
+				url: 'https://graph.facebook.com/v2.6/me/messages',
+				qs: { access_token: PAGE_ACCESS_TOKEN },
+				method: 'POST',
+				json: {
+					recipient: { id: sender },
+					message: { text: aiText }
+				}
+			}, (error, response) => {
+				if (error) {
+					console.log('Error sending message: ', error);
+				} else if (response.body.error) {
+					console.log('Error: ', response.body.error);
+				}
+			});
+		});
+
+		apiai.on('error', (error) => {
+			console.log(error);
+		});
+
+		apiai.end();
 	},
 	processIncident: function (req, res) {
 		switch (req.body.result.action) {
@@ -122,5 +114,3 @@ var self = {
 		});
 	}
 }
-
-module.exports = self;

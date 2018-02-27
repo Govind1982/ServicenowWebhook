@@ -17,15 +17,12 @@
 'use strict';
 
 const apiai = require('apiai');
-const express = require('express');
-const bodyParser = require('body-parser');
 const uuid = require('uuid');
-const request = require('request');
 const JSONbig = require('json-bigint');
 const async = require('async');
 
 const APIAI_ACCESS_TOKEN = process.env.DIALOGFLOW_CLIENT_ACCESS_TOKEN;
-const APIAI_LANG = process.env.APIAI_LANG || 'en';
+const APIAI_LANG = process.env.DIALOGFLOW_LANG;
 const FB_VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN;
 const FB_PAGE_ACCESS_TOKEN = process.env.FB_PAGE_ACCESS_TOKEN;
 const FB_TEXT_LIMIT = 640;
@@ -37,7 +34,7 @@ const apiAiService = apiai(APIAI_ACCESS_TOKEN, { language: APIAI_LANG, requestSo
 const sessionIds = new Map();
 const messagesDelay = 200;
 
-var self = {
+module.exports = {
     doDataResponse: function (sender, facebookResponseData) {
         if (!Array.isArray(facebookResponseData)) {
             console.log('Response as formatted message');
@@ -474,5 +471,3 @@ var self = {
         });
     }
 }
-
-module.exports = self;
