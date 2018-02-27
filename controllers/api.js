@@ -28,7 +28,15 @@ var self = {
 								var apiai = apiaiApp.eventRequest(event, options);
 
 								apiai.on('response', function (response) {
-									console.log(util.inspect(response.messaging, false, null));
+									if (this.isDefined(response.result) && this.isDefined(response.result.fulfillment)) {
+										let responseText = response.result.fulfillment.speech;
+										let responseData = response.result.fulfillment.data;
+										let responseMessages = response.result.fulfillment.messages;
+						
+										console.log(responseText);
+										console.log(responseData);
+										console.log(responseMessages);
+									}
 								});
 
 								apiai.on('error', function (error) {
