@@ -17,7 +17,7 @@ var self = {
 					} else if (event.postback && event.postback.payload) {
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
-
+								self.invokeCreateIncidentEvent(event);
 								break;
 						}
 					}
@@ -96,7 +96,7 @@ var self = {
 			});
 		});
 	},
-	invokeCreateIncidentEvent: function () {
+	invokeCreateIncidentEvent: function (event) {
 		let messageData = {
 			"followupEvent": {
 				"name": "create_incident_event"
