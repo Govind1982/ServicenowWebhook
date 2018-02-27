@@ -8,12 +8,13 @@ const apiaiApp = apiai(process.env.DIALOGFLOW_CLIENT_ACCESS_TOKEN);
 
 var self = {
 	webhookEndpoint: function (req, res) {
-		console.log(req.body);
 		if (req.body.object === 'page') {
 			req.body.entry.forEach((entry) => {
 				entry.messaging.forEach((event) => {
 					if (event.message && event.message.text) {
-						self.sendMessage(event);
+						let sender = event.sender.id;
+						let text = event.message.text;
+						self.sendMessage(sender, text);
 					} else if (event.postback && event.postback.payload) {
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
@@ -31,11 +32,9 @@ var self = {
 									console.log(response);
 									if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
 										let responseText = response.result.fulfillment.speech;
-										let responseData = response.result.fulfillment.data;
-										let responseMessages = response.result.fulfillment.messages;
-										console.log(responseText);
-									} else {
-										console.log("ddddd out");
+										let sender = event.sender.id;
+										let text = responseText;
+										self.sendMessage(sender, text);
 									}
 								});
 
@@ -59,10 +58,7 @@ var self = {
 			res.send('Error, wrong validation token');
 		}
 	},
-	sendMessage: function (event) {
-		let sender = event.sender.id;
-		let text = event.message.text;
-
+	sendMessage: function (sender, text) {
 		let apiai = apiaiApp.textRequest(text, {
 			sessionId: '1234567890'
 		});
