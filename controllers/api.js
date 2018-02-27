@@ -26,7 +26,7 @@ var self = {
 								};
 
 								var apiai = apiaiApp.eventRequest(event, options);
-
+								console.log("postback");
 								apiai.on('response', function (response) {
 									if (this.isDefined(response.result) && this.isDefined(response.result.fulfillment)) {
 										let responseText = response.result.fulfillment.speech;
