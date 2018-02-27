@@ -78,35 +78,30 @@ var self = {
 		}
 	},
 	dislplayWelcomeCard: function (req, res) {
-		/*let response = res.json({
-			"message": {
-				"attachment": {
-					"type": "template",
-					"payload": {
-						"template_type": "generic",
-						"elements": [
-							{
-								'title': 'Please choose an item',
-								'image_url': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
-								'buttons': [
-									{
-										'type': 'postback',
-										'title': 'Create Incident',
-										'payload': 'CREATE_INCIDENT'
-									},
-									{
-										'type': 'postback',
-										'title': 'Get Incident Status',
-										'payload': 'GET_INCIDENT_STATUS'
-									}
-								]
-							}
-						]
+		 res.json({
+			"speech": "",
+			"messages": [{
+				  "type": 1,
+				  "platform": "facebook",
+				  'title': 'Please choose an item',
+				  "subtitle": "Thank you for using me, I can help you please choose any one option",
+				  'imageUrl': 'https://diginomica.com/wp-content/uploads/2015/01/servicenow.jpeg',
+				  "buttons": [
+					{
+					  "text": "Create Incident",
+					  "postback": "Create Incident"
+					},
+					{
+					  "text": "Track Incident",
+					  "postback": ""
 					}
-				}
-			}
-		});*/
-		console.log(req);
+				  ]
+				},				 
+				{
+					"type": 0,
+					"speech": ""
+				}]
+		});
 	},
 	getIncidentStatus: function (req, res) {
 		let sysId = req.body.result.parameters.sysid;
