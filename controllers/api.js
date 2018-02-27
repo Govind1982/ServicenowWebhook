@@ -36,7 +36,7 @@ var self = {
 		});
 
 		apiai.on('response', (response) => {
-			console.log(response)
+			console.log("aaaaaaaaaa")
 			let aiText = response.result.fulfillment.speech;
 
 			request({
