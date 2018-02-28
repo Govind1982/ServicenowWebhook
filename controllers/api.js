@@ -41,20 +41,21 @@ var self = {
 			sessionId: '1234567890'
 		});
 
-		apiai.on('response', (response) => {
+		apiai.on('response', (response) => {			
 			console.log("textrequest response below");
 			console.log(response);
 			if (response.result.action === "input.welcome") {
 				self.dislplayWelcomeCard(event);
 			} else {
 				let aiText = response.result.fulfillment.speech;
+				let messageData = { text: aiText };
 				request({
 					url: 'https://graph.facebook.com/v2.6/me/messages',
 					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
 					method: 'POST',
 					json: {
 						recipient: { id: sender },
-						message: { text: aiText }
+						message: messageData
 					}
 				}, (error, resp) => {
 					if (error) {
@@ -106,8 +107,6 @@ var self = {
 
 		var apiai = apiaiApp.eventRequest(eventInfo, options);
 		apiai.on('response', function (response) {
-			console.log("eventrequest response below");
-			console.log(response);
 			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
 				let responseText = response.result.fulfillment.speech;
 				request({
