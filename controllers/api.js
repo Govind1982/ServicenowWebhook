@@ -16,10 +16,19 @@ var self = {
 						let text = event.message.text;
 						self.sendMessage(event, sender, text);
 					} else if (event.postback && event.postback.payload) {
+						var eventInfo;
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
-								self.invokeCreateIncidentEvent(sender);
+								eventInfo = {
+									name: "create_incident_event"
+								};
 								break;
+							case "GET_INCIDENT_STATUS":
+								eventInfo = {
+									name: "get_incidentinfo_event"
+								};
+								break;
+								self.invokeEvent(sender, eventInfo);
 						}
 					}
 				});
@@ -107,11 +116,7 @@ var self = {
 			});
 		});
 	},
-	invokeCreateIncidentEvent: function (sender) {
-		var eventInfo = {
-			name: "create_incident_event"
-		};
-
+	invokeEvent: function (sender, eventInfo) {
 		var options = {
 			sessionId: '1234567890'
 		};
