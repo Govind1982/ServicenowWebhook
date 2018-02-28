@@ -49,6 +49,14 @@ var self = {
 			} else {
 				let aiText = response.result.fulfillment.speech;
 				let messageData = { text: aiText };
+				if(response.result.actionIncomplete === true) {
+					switch(aiText) {
+						case "Please choose a category":
+							messageData = self.showCategoryChoices();
+						break;
+					}
+				}
+				console.log(messageData);
 				request({
 					url: 'https://graph.facebook.com/v2.6/me/messages',
 					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
@@ -134,7 +142,7 @@ var self = {
 
 		apiai.end();
 	},
-	showCategoryChoices: function (event, responseText) {
+	showCategoryChoices: function () {
 		let messageData = {
 			"text": responseText,
 			"quick_replies": [
@@ -150,7 +158,7 @@ var self = {
 				}
 			]
 		};
-		self.sendRichContentResponse(event, messageData);
+		return messageData;
 	},
 	processIncident: function (req, res) {
 		switch (req.body.result.action) {
