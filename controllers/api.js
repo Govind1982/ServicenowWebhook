@@ -147,14 +147,29 @@ var self = {
 			"text": aiText,
 			"quick_replies": [
 				{
-					"inquiry/Help": "inquiry/Help",
-					"Software": "Software",
-					"Hardware": "Hardware",
-					"Network": "Network",
-					"Database": "Database"
+					"content_type":"text",
+					"title":"inquiry/Help",
+					"payload":"inquiry"
 				},
 				{
-					"content_type": "location"
+					"content_type":"text",
+					"title": "Software",
+					"payload":"software"
+				},
+				{
+					"content_type":"text",
+					"title": "Hardware",
+					"payload":"hardware"
+				},
+				{
+					"content_type":"text",
+					"title": "Network",
+					"payload":"network"
+				},
+				{
+					"content_type":"text",					
+					"title": "Database",
+					"payload":"database",
 				}
 			]
 		};
