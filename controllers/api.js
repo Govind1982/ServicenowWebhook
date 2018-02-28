@@ -44,13 +44,12 @@ var self = {
 		});
 
 		apiai.on('response', (response) => {
-			console.log(response);
 			if (response.result.action === "input.welcome") {
 				self.dislplayWelcomeCard(event);
 			} else {
 				let aiText = response.result.fulfillment.speech;
 				
-				if (response.result.actionIncomplete === false) {
+				/*if (response.result.actionIncomplete === false) {
 					console.log(aiText);
 					switch (aiText) {
 						case "Please choose a category":
@@ -58,7 +57,7 @@ var self = {
 							break;
 					}
 					return;
-				}
+				}*/
 				request({
 					url: 'https://graph.facebook.com/v2.6/me/messages',
 					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
@@ -118,6 +117,7 @@ var self = {
 
 		var apiai = apiaiApp.eventRequest(eventInfo, options);
 		apiai.on('response', function (response) {
+			console.log(response);
 			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
 				let responseText = response.result.fulfillment.speech;
 				self.sendMessage(event, sender, responseText);
