@@ -82,32 +82,27 @@ var self = {
 	},
 	sendRichContentResponse: function (event, messageData) {
 		let sender = event.sender.id;
-		apiaiApp.on('response', (response) => {
-			return new Promise((resolve, reject) => {
-				request({
-					url: 'https://graph.facebook.com/v2.6/me/messages',
-					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
-					method: 'POST',
-					json: {
-						recipient: { id: sender },
-						message: messageData
-					}
-				}, (error, response) => {
-					if (error) {
-						console.log('Error sending message: ', error);
-						reject(error);
-					} else if (response.body.error) {
-						console.log('Error: ', response.body.error);
-						reject(new Error(response.body.error));
-					}
+		return new Promise((resolve, reject) => {
+			request({
+				url: 'https://graph.facebook.com/v2.6/me/messages',
+				qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
+				method: 'POST',
+				json: {
+					recipient: { id: sender },
+					message: messageData
+				}
+			}, (error, response) => {
+				if (error) {
+					console.log('Error sending message: ', error);
+					reject(error);
+				} else if (response.body.error) {
+					console.log('Error: ', response.body.error);
+					reject(new Error(response.body.error));
+				}
 
-					resolve();
-				});
+				resolve();
 			});
 		});
-
-		apiaiApp.on('error', (error) => console.error(error));
-		apiaiApp.end();
 	},
 	invokeCreateIncidentEvent: function (event, sender) {
 		var eventInfo = {
