@@ -105,7 +105,7 @@ var self = {
 
 		var apiai = apiaiApp.eventRequest(eventInfo, options);
 		apiai.on('response', function (response) {
-			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
+			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {				
 				let responseText = response.result.fulfillment.speech;
 				console.log(responseText);
 				switch(responseText) {
