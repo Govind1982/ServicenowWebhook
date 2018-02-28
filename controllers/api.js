@@ -36,6 +36,11 @@ var self = {
 		}
 	},
 	sendMessage: function (event, sender, text) {
+
+		if (event.postback && event.postback.payload) {
+			console.log("sssssssssssssssssssssssssssssssssssssss");
+		}
+
 		let apiai = apiaiApp.textRequest(text, {
 			sessionId: '1234567890'
 		});
