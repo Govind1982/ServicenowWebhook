@@ -49,6 +49,7 @@ var self = {
 				self.dislplayWelcomeCard(event);
 			} else {
 				let aiText = response.result.fulfillment.speech;
+				console.log(typeof response.result.actionIncomplete);
 				if (response.result.actionIncomplete === false) {
 					switch (aiText) {
 						case "Please choose a category":
