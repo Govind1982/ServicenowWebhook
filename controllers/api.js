@@ -246,7 +246,7 @@ var self = {
 			let dataToSend = (result.active === "true") ? "Incident status is active" : "Incident status is inactive";
 			return res.json({
 				speech: dataToSend,
-				displayText: dataToSend,
+				displayText: result,
 				source: '/incident/getstatus'
 			});
 		}).catch(function (error) {
