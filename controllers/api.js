@@ -133,7 +133,6 @@ var self = {
 	},
 	showCategoryChoices: function (event, responseText) {
 		let messageData = {
-			"attachment": {
 				"text": responseText,
 				"quick_replies": [
 					{
@@ -144,7 +143,6 @@ var self = {
 						"Database": "Database"
 					}
 				]
-			}
 		};
 		self.sendRichContentResponse(event, messageData);
 	},
