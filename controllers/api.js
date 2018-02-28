@@ -151,7 +151,7 @@ var self = {
 		apiai.end();
 	},
 	invokeGetIncidentInfoEvent: function (sender) {
-		eventInfo = {
+		var eventInfo = {
 			name: "get_incidentinfo_event"
 		};
 
