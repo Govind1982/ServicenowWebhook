@@ -243,10 +243,11 @@ var self = {
 	getIncidentStatus: function (req, res) {
 		let sysId = req.body.result.parameters.sysid;
 		gr.get(sysId).then(function (result) {
+			console.log(result);
 			let dataToSend = (result.active === "true") ? "Incident status is active" : "Incident status is inactive";
 			return res.json({
 				speech: dataToSend,
-				displayText: result,
+				displayText: dataToSend,
 				source: '/incident/getstatus'
 			});
 		}).catch(function (error) {
