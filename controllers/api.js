@@ -40,7 +40,7 @@ var self = {
 			sessionId: '1234567890'
 		});
 
-		apiai.on('response', (response) => {.
+		apiai.on('response', (response) => {
 			console.log(response);
 			if (response.result.action === "input.welcome") {
 				self.dislplayWelcomeCard(event);
