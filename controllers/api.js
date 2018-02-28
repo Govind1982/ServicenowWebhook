@@ -37,9 +37,7 @@ var self = {
 	},
 	sendMessage: function (event, sender, text) {
 
-		if (event.postback && event.postback.payload) {
-			console.log("sssssssssssssssssssssssssssssssssssssss");
-		}
+		
 
 		let apiai = apiaiApp.textRequest(text, {
 			sessionId: '1234567890'
@@ -51,7 +49,10 @@ var self = {
 				self.dislplayWelcomeCard(event);
 			} else {
 				let aiText = response.result.fulfillment.speech;
-console.log(aiText+"hereeee");
+				console.log(event);
+				if (event.postback && event.postback.payload) {
+					console.log("sssssssssssssssssssssssssssssssssssssss");
+				}
 				request({
 					url: 'https://graph.facebook.com/v2.6/me/messages',
 					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
