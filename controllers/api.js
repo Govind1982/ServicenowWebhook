@@ -41,7 +41,7 @@ var self = {
 			sessionId: '1234567890'
 		});
 
-		apiai.on('response', (response) => {			
+		apiai.on('response', (response) => {
 			console.log("textrequest response below");
 			console.log(response);
 			if (response.result.action === "input.welcome") {
@@ -49,14 +49,14 @@ var self = {
 			} else {
 				let aiText = response.result.fulfillment.speech;
 				let messageData = { text: aiText };
-				if(response.result.actionIncomplete === true) {
-					switch(aiText) {
+				if (response.result.actionIncomplete === true) {
+					switch (aiText) {
 						case "Please choose a category":
 							messageData = self.showCategoryChoices(aiText);
-						break;
+							break;
 						case "Please select the impact level":
 							messageData = self.showImpactLevels(aiText);
-						break;
+							break;
 					}
 				}
 				console.log(messageData);
@@ -150,29 +150,29 @@ var self = {
 			"text": aiText,
 			"quick_replies": [
 				{
-					"content_type":"text",
-					"title":"inquiry/Help",
-					"payload":"inquiry"
+					"content_type": "text",
+					"title": "inquiry/Help",
+					"payload": "inquiry"
 				},
 				{
-					"content_type":"text",
+					"content_type": "text",
 					"title": "Software",
-					"payload":"software"
+					"payload": "software"
 				},
 				{
-					"content_type":"text",
+					"content_type": "text",
 					"title": "Hardware",
-					"payload":"hardware"
+					"payload": "hardware"
 				},
 				{
-					"content_type":"text",
+					"content_type": "text",
 					"title": "Network",
-					"payload":"network"
+					"payload": "network"
 				},
 				{
-					"content_type":"text",					
+					"content_type": "text",
 					"title": "Database",
-					"payload":"database",
+					"payload": "database",
 				}
 			]
 		};
@@ -183,19 +183,19 @@ var self = {
 			"text": aiText,
 			"quick_replies": [
 				{
-					"content_type":"text",
-					"title":"High",
-					"payload":"1"
+					"content_type": "text",
+					"title": "High",
+					"payload": "1"
 				},
 				{
-					"content_type":"text",
+					"content_type": "text",
 					"title": "Medium",
-					"payload":"2"
+					"payload": "2"
 				},
 				{
-					"content_type":"text",
+					"content_type": "text",
 					"title": "Low",
-					"payload":"3"
+					"payload": "3"
 				}
 			]
 		};
@@ -243,8 +243,15 @@ var self = {
 	getIncidentStatus: function (req, res) {
 		let sysId = req.body.result.parameters.sysid;
 		gr.get(sysId).then(function (result) {
-			console.log(result);
-			let dataToSend = (result.active === "true") ? "Incident status is active" : "Incident status is inactive";
+			switch (result.incident_state) {
+				case '1': case 1: status = "new"; break;
+				case '2': case 2: status = "in-prog"; break;
+				case '3': case 3: status = "on-hold"; break;
+				case '6': case 6: status = "resolved"; break;
+				case '7': case 7: status = "closed"; break;
+				case '8': case 8: status = "canceled"; break;
+			}
+			let dataToSend = "Incident status is " + status;
 			return res.json({
 				speech: dataToSend,
 				displayText: dataToSend,
