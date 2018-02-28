@@ -37,27 +37,17 @@ var self = {
 	},
 	sendMessage: function (event, sender, text) {
 
-
-
 		let apiai = apiaiApp.textRequest(text, {
 			sessionId: '1234567890'
 		});
 
 		apiai.on('response', (response) => {
+			console.log("textrequest response below");
+			console.log(response);
 			if (response.result.action === "input.welcome") {
 				self.dislplayWelcomeCard(event);
 			} else {
 				let aiText = response.result.fulfillment.speech;
-				
-				/*if (response.result.actionIncomplete === false) {
-					console.log(aiText);
-					switch (aiText) {
-						case "Please choose a category":
-							self.showCategoryChoices(event, aiText);
-							break;
-					}
-					return;
-				}*/
 				request({
 					url: 'https://graph.facebook.com/v2.6/me/messages',
 					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
@@ -66,11 +56,11 @@ var self = {
 						recipient: { id: sender },
 						message: { text: aiText }
 					}
-				}, (error, response) => {
+				}, (error, resp) => {
 					if (error) {
 						console.log('Error sending message: ', error);
-					} else if (response.body.error) {
-						console.log('Error: ', response.body.error);
+					} else if (resp.body.error) {
+						console.log('Error: ', resp.body.error);
 					}
 				});
 			}
@@ -93,15 +83,14 @@ var self = {
 					recipient: { id: sender },
 					message: messageData
 				}
-			}, (error, response) => {
+			}, (error, res) => {
 				if (error) {
 					console.log('Error sending message: ', error);
 					reject(error);
-				} else if (response.body.error) {
-					console.log('Error: ', response.body.error);
-					reject(new Error(response.body.error));
+				} else if (res.body.error) {
+					console.log('Error: ', res.body.error);
+					reject(new Error(res.body.error));
 				}
-
 				resolve();
 			});
 		});
@@ -117,12 +106,26 @@ var self = {
 
 		var apiai = apiaiApp.eventRequest(eventInfo, options);
 		apiai.on('response', function (response) {
-			
+			console.log("eventrequest response below");
+			console.log(response);
 			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
-				console.log(response.result.fulfillment+"ssssssssssss");
 				let responseText = response.result.fulfillment.speech;
-				self.sendMessage(event, sender, responseText);
-			
+				request({
+					url: 'https://graph.facebook.com/v2.6/me/messages',
+					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
+					method: 'POST',
+					json: {
+						recipient: { id: event.sender.id },
+						message: { text: responseText }
+					}
+				}, (error, res) => {
+					if (error) {
+						console.log('Error sending message: ', error);
+					} else if (res.body.error) {
+						console.log('Error: ', res.body.error);
+					}
+				});
+
 			}
 		});
 
@@ -142,6 +145,9 @@ var self = {
 					"Hardware": "Hardware",
 					"Network": "Network",
 					"Database": "Database"
+				},
+				{
+					"content_type": "location"
 				}
 			]
 		};
