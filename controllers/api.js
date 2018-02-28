@@ -17,14 +17,20 @@ var self = {
 						self.sendMessage(event, sender, text);
 					} else if (event.postback && event.postback.payload) {
 						var eventInfo;
+						console.log(event.postback.payload);
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
-								self.invokeCreateIncidentEvent(sender);
+								eventInfo = {
+									name: "create_incident_event"
+								};
+								self.invokeEvent(sender, eventInfo);
 								break;
 							case "GET_INCIDENT_STATUS":
-								self.invokeGetIncidentInfoEvent(sender);
+								eventInfo = {
+									name: "get_incidentinfo_event"
+								};
+								self.invokeEvent(sender, eventInfo);
 								break;
-
 						}
 					}
 				});
@@ -47,8 +53,6 @@ var self = {
 		});
 
 		apiai.on('response', (response) => {
-			console.log("textrequest response below");
-			console.log(response);
 			if (response.result.action === "input.welcome") {
 				self.dislplayWelcomeCard(event);
 			} else {
@@ -64,7 +68,6 @@ var self = {
 							break;
 					}
 				}
-				console.log(messageData);
 				request({
 					url: 'https://graph.facebook.com/v2.6/me/messages',
 					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
@@ -112,49 +115,7 @@ var self = {
 			});
 		});
 	},
-	invokeCreateIncidentEvent: function (sender) {
-		var eventInfo = {
-			name: "create_incident_event"
-		};
-
-		var options = {
-			sessionId: '1234567890'
-		};
-
-		var apiai = apiaiApp.eventRequest(eventInfo, options);
-		apiai.on('response', function (response) {
-			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
-				let responseText = response.result.fulfillment.speech;
-				request({
-					url: 'https://graph.facebook.com/v2.6/me/messages',
-					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
-					method: 'POST',
-					json: {
-						recipient: { id: sender },
-						message: { text: responseText }
-					}
-				}, (error, res) => {
-					if (error) {
-						console.log('Error sending message: ', error);
-					} else if (res.body.error) {
-						console.log('Error: ', res.body.error);
-					}
-				});
-
-			}
-		});
-
-		apiai.on('error', function (error) {
-			console.log(error);
-		});
-
-		apiai.end();
-	},
-	invokeGetIncidentInfoEvent: function (sender) {
-		var eventInfo = {
-			name: "get_incidentinfo_event"
-		};
-
+	invokeEvent: function (sender, eventInfo) {
 		var options = {
 			sessionId: '1234567890'
 		};
