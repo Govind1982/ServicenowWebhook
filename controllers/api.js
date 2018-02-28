@@ -19,16 +19,12 @@ var self = {
 						var eventInfo;
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
-								eventInfo = {
-									name: "create_incident_event"
-								};
+								self.invokeCreateIncidentEvent(sender);
 								break;
 							case "GET_INCIDENT_STATUS":
-								eventInfo = {
-									name: "get_incidentinfo_event"
-								};
+								self.invokeGetIncidentInfoEvent(sender);
 								break;
-								self.invokeEvent(sender, eventInfo);
+
 						}
 					}
 				});
@@ -116,7 +112,49 @@ var self = {
 			});
 		});
 	},
-	invokeEvent: function (sender, eventInfo) {
+	invokeCreateIncidentEvent: function (sender) {
+		var eventInfo = {
+			name: "create_incident_event"
+		};
+
+		var options = {
+			sessionId: '1234567890'
+		};
+
+		var apiai = apiaiApp.eventRequest(eventInfo, options);
+		apiai.on('response', function (response) {
+			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
+				let responseText = response.result.fulfillment.speech;
+				request({
+					url: 'https://graph.facebook.com/v2.6/me/messages',
+					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
+					method: 'POST',
+					json: {
+						recipient: { id: sender },
+						message: { text: responseText }
+					}
+				}, (error, res) => {
+					if (error) {
+						console.log('Error sending message: ', error);
+					} else if (res.body.error) {
+						console.log('Error: ', res.body.error);
+					}
+				});
+
+			}
+		});
+
+		apiai.on('error', function (error) {
+			console.log(error);
+		});
+
+		apiai.end();
+	},
+	invokeGetIncidentInfoEvent: function (sender) {
+		eventInfo = {
+			name: "get_incidentinfo_event"
+		};
+
 		var options = {
 			sessionId: '1234567890'
 		};
