@@ -18,7 +18,7 @@ var self = {
 					} else if (event.postback && event.postback.payload) {
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
-								self.invokeCreateIncidentEvent(event, sender);
+								self.invokeCreateIncidentEvent(sender);
 								break;
 						}
 					}
@@ -95,7 +95,7 @@ var self = {
 			});
 		});
 	},
-	invokeCreateIncidentEvent: function (event, sender) {
+	invokeCreateIncidentEvent: function (sender) {
 		var eventInfo = {
 			name: "create_incident_event"
 		};
@@ -115,7 +115,7 @@ var self = {
 					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
 					method: 'POST',
 					json: {
-						recipient: { id: event.sender.id },
+						recipient: { id: sender },
 						message: { text: responseText }
 					}
 				}, (error, res) => {
