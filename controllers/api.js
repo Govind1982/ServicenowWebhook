@@ -8,17 +8,17 @@ const apiaiApp = apiai(process.env.DIALOGFLOW_CLIENT_ACCESS_TOKEN);
 
 var self = {
 	webhookEndpoint: function (req, res) {
-		if (req.body.object === 'page') {			
+		if (req.body.object === 'page') {
 			req.body.entry.forEach((entry) => {
 				entry.messaging.forEach((event) => {
 					let sender = event.sender.id;
-					if (event.message && event.message.text) {						
+					if (event.message && event.message.text) {
 						let text = event.message.text;
 						self.sendMessage(event, sender, text);
 					} else if (event.postback && event.postback.payload) {
 						switch (event.postback.payload) {
 							case "CREATE_INCIDENT":
-							self.invokeCreateIncidentEvent(event, sender);
+								self.invokeCreateIncidentEvent(event, sender);
 								break;
 						}
 					}
@@ -102,19 +102,20 @@ var self = {
 
 		var options = {
 			sessionId: '1234567890'
-		};		
+		};
 
 		var apiai = apiaiApp.eventRequest(eventInfo, options);
 		apiai.on('response', function (response) {
-			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {				
+			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
 				let responseText = response.result.fulfillment.speech;
 				console.log(responseText);
-				switch(responseText) {
-					case "":
-					break;
-					defalut:
+				switch (responseText) {
+					case "Please choose a category":
+						self.showCategoryChoices(event, responseText);
+						break;
+						defalut:
 						self.sendMessage(event, sender, responseText);
-					break;
+						break;
 				}
 			}
 		});
@@ -124,6 +125,23 @@ var self = {
 		});
 
 		apiai.end();
+	},
+	showCategoryChoices: function (event, responseText) {
+		let messageData = {
+			"attachment": {
+				"text": responseText,
+				"quick_replies": [
+					{
+						"inquiry/Help": "inquiry/Help",
+						"Software": "Software",
+						"Hardware": "Hardware",
+						"Network": "Network",
+						"Database": "Database"
+					}
+				]
+			}
+		};
+		self.sendRichContentResponse(event, messageData);
 	},
 	processIncident: function (req, res) {
 		switch (req.body.result.action) {
@@ -204,16 +222,16 @@ var self = {
 		});
 	},
 	isDefined: function (obj) {
-        if (typeof obj == 'undefined') {
-            return false;
-        }
+		if (typeof obj == 'undefined') {
+			return false;
+		}
 
-        if (!obj) {
-            return false;
-        }
+		if (!obj) {
+			return false;
+		}
 
-        return obj != null;
-    }
+		return obj != null;
+	}
 }
 
 module.exports = self;
