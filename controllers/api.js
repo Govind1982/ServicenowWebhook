@@ -54,6 +54,9 @@ var self = {
 						case "Please choose a category":
 							messageData = self.showCategoryChoices(aiText);
 						break;
+						case "Please select the impact level":
+							messageData = self.showImpactLevels(aiText);
+						break;
 					}
 				}
 				console.log(messageData);
@@ -170,6 +173,29 @@ var self = {
 					"content_type":"text",					
 					"title": "Database",
 					"payload":"database",
+				}
+			]
+		};
+		return messageData;
+	},
+	showImpactLevels: function (aiText) {
+		let messageData = {
+			"text": aiText,
+			"quick_replies": [
+				{
+					"content_type":"text",
+					"title":"High",
+					"payload":"1"
+				},
+				{
+					"content_type":"text",
+					"title": "Medium",
+					"payload":"2"
+				},
+				{
+					"content_type":"text",
+					"title": "Low",
+					"payload":"3"
 				}
 			]
 		};
