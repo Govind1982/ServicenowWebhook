@@ -49,13 +49,15 @@ var self = {
 				self.dislplayWelcomeCard(event);
 			} else {
 				let aiText = response.result.fulfillment.speech;
-				console.log(typeof response.result.actionIncomplete);
+				
 				if (response.result.actionIncomplete === false) {
+					console.log(aiText);
 					switch (aiText) {
 						case "Please choose a category":
-							self.showCategoryChoices(event, responseText);
+							self.showCategoryChoices(event, aiText);
 							break;
 					}
+					return;
 				}
 				request({
 					url: 'https://graph.facebook.com/v2.6/me/messages',
