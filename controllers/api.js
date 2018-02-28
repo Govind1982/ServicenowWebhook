@@ -37,7 +37,7 @@ var self = {
 	},
 	sendMessage: function (event, sender, text) {
 
-		
+
 
 		let apiai = apiaiApp.textRequest(text, {
 			sessionId: '1234567890'
@@ -49,9 +49,12 @@ var self = {
 				self.dislplayWelcomeCard(event);
 			} else {
 				let aiText = response.result.fulfillment.speech;
-				console.log(event);
-				if (event.postback && event.postback.payload) {
-					console.log("sssssssssssssssssssssssssssssssssssssss");
+				if (response.result.actionIncomplete === false) {
+					switch (aiText) {
+						case "Please choose a category":
+							self.showCategoryChoices(event, responseText);
+							break;
+					}
 				}
 				request({
 					url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -79,27 +82,32 @@ var self = {
 	},
 	sendRichContentResponse: function (event, messageData) {
 		let sender = event.sender.id;
-		return new Promise((resolve, reject) => {
-			request({
-				url: 'https://graph.facebook.com/v2.6/me/messages',
-				qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
-				method: 'POST',
-				json: {
-					recipient: { id: sender },
-					message: messageData
-				}
-			}, (error, response) => {
-				if (error) {
-					console.log('Error sending message: ', error);
-					reject(error);
-				} else if (response.body.error) {
-					console.log('Error: ', response.body.error);
-					reject(new Error(response.body.error));
-				}
+		apiaiApp.on('response', (response) => {
+			return new Promise((resolve, reject) => {
+				request({
+					url: 'https://graph.facebook.com/v2.6/me/messages',
+					qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
+					method: 'POST',
+					json: {
+						recipient: { id: sender },
+						message: messageData
+					}
+				}, (error, response) => {
+					if (error) {
+						console.log('Error sending message: ', error);
+						reject(error);
+					} else if (response.body.error) {
+						console.log('Error: ', response.body.error);
+						reject(new Error(response.body.error));
+					}
 
-				resolve();
+					resolve();
+				});
 			});
 		});
+
+		apiaiApp.on('error', (error) => console.error(error));
+		apiaiApp.end();
 	},
 	invokeCreateIncidentEvent: function (event, sender) {
 		var eventInfo = {
@@ -114,15 +122,7 @@ var self = {
 		apiai.on('response', function (response) {
 			if (self.isDefined(response.result) && self.isDefined(response.result.fulfillment)) {
 				let responseText = response.result.fulfillment.speech;
-				console.log(responseText);
-				switch (responseText) {
-					case "Please choose a category":
-						self.showCategoryChoices(event, responseText);
-						break;
-						defalut:
-						self.sendMessage(event, sender, responseText);
-						break;
-				}
+				self.sendMessage(event, sender, responseText);
 			}
 		});
 
@@ -134,16 +134,16 @@ var self = {
 	},
 	showCategoryChoices: function (event, responseText) {
 		let messageData = {
-				"text": responseText,
-				"quick_replies": [
-					{
-						"inquiry/Help": "inquiry/Help",
-						"Software": "Software",
-						"Hardware": "Hardware",
-						"Network": "Network",
-						"Database": "Database"
-					}
-				]
+			"text": responseText,
+			"quick_replies": [
+				{
+					"inquiry/Help": "inquiry/Help",
+					"Software": "Software",
+					"Hardware": "Hardware",
+					"Network": "Network",
+					"Database": "Database"
+				}
+			]
 		};
 		self.sendRichContentResponse(event, messageData);
 	},
