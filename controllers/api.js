@@ -52,7 +52,7 @@ var self = {
 				if(response.result.actionIncomplete === true) {
 					switch(aiText) {
 						case "Please choose a category":
-							messageData = self.showCategoryChoices();
+							messageData = self.showCategoryChoices(aiText);
 						break;
 					}
 				}
@@ -142,9 +142,9 @@ var self = {
 
 		apiai.end();
 	},
-	showCategoryChoices: function () {
+	showCategoryChoices: function (aiText) {
 		let messageData = {
-			"text": responseText,
+			"text": aiText,
 			"quick_replies": [
 				{
 					"inquiry/Help": "inquiry/Help",
