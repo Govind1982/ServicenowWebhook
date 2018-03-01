@@ -1,6 +1,7 @@
 'use strict';
 
 var apiai = require('apiai');
+
 const request = require('request');
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
@@ -245,28 +246,47 @@ var self = {
 		self.sendRichContentResponse(event, messageData)
 	},
 	getIncidentStatus: function (req, res) {
-		let sysId = req.body.result.parameters.sysid;
-		gr.get(sysId).then(function (result) {
-			switch (result.incident_state) {
-				case '1': case 1: status = "new"; break;
-				case '2': case 2: status = "in-prog"; break;
-				case '3': case 3: status = "on-hold"; break;
-				case '6': case 6: status = "resolved"; break;
-				case '7': case 7: status = "closed"; break;
-				case '8': case 8: status = "canceled"; break;
+		let incidentNumber = req.body.result.parameters.sysid.toUpperCase();
+		let dataToSend = "Incident status is ";
+		var options = {
+			method: 'GET',
+			url: 'https://dev18442.service-now.com/api/now/v1/table/incident',
+			qs: {
+				number: incidentNumber
+			},
+			headers: {
+				'postman-token': '5441f224-d11a-2f78-69cd-51e58e2fbdb6',
+				'cache-control': 'no-cache',
+				authorization: 'Basic MzMyMzg6YWJjMTIz'
+			}, json: true
+		};
+		request(options, function (error, response, body) {
+			if (error) {
+				response = (typeof (error) == 'object') ? JSON.stringify(error) : error;
+				return res.json({
+					speech: response,
+					displayText: error,
+					source: '/incident/getstatus'
+				});
+			} else {
+				if (body.error) {
+					dataToSend = "Sorry!.Data is not available";
+				} else {
+					switch (body.result[0].incident_state) {
+						case '1': case 1: dataToSend += "new"; break;
+						case '2': case 2: dataToSend += "in-prog"; break;
+						case '3': case 3: dataToSend += "on-hold"; break;
+						case '6': case 6: dataToSend += "resolved"; break;
+						case '7': case 7: dataToSend += "closed"; break;
+						case '8': case 8: dataToSend += "canceled"; break;
+					}
+				}
+				return res.json({
+					speech: dataToSend,
+					displayText: dataToSend,
+					source: '/incident/getstatus'
+				});
 			}
-			let dataToSend = "Incident status is " + status;
-			return res.json({
-				speech: dataToSend,
-				displayText: dataToSend,
-				source: '/incident/getstatus'
-			});
-		}).catch(function (error) {
-			return res.json({
-				speech: 'Something went wrong!',
-				displayText: 'Something went wrong!',
-				source: '/incident/getstatus'
-			});
 		});
 	},
 	createIncident: function (req, res) {
