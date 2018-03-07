@@ -5,7 +5,7 @@ var apiai = require('apiai');
 const request = require('request');
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
-const apiaiApp = apiai(process.env.DIALOGFLOW_CLIENT_ACCESS_TOKEN);
+const apiaiApp = apiai(process.env.DIALOGFLOWAGENT_CLIENT_ACCESS_TOKEN);
 
 var self = {
 	webhookEndpoint: function (req, res) {
