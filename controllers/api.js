@@ -1,7 +1,8 @@
 'use strict';
 
 var apiai = require('apiai');
-
+var dateFormat = require('dateformat');
+var fs = require('fs');
 const request = require('request');
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
@@ -15,7 +16,7 @@ var self = {
 					let sender = event.sender.id;
 					if (event.message && event.message.text) {
 						let text = event.message.text;
-						self.sendMessage(event, sender, text);
+						self.sendMessage(req, event, sender, text);
 					} else if (event.postback && event.postback.payload) {
 						var eventInfo;
 						console.log(event.postback.payload);
@@ -47,7 +48,7 @@ var self = {
 			res.send('Error, wrong validation token');
 		}
 	},
-	sendMessage: function (event, sender, text) {
+	sendMessage: function (req, event, sender, text) {
 
 		let apiai = apiaiApp.textRequest(text, {
 			sessionId: '1234567890'
@@ -59,6 +60,9 @@ var self = {
 			} else {
 				let aiText = response.result.fulfillment.speech;
 				let messageData = { text: aiText };
+				//log here with session id, message, user message and bot message
+				var logMessage = "User says:"+response.result.resolvedQuery+"\n"+"Bot says:"+aiText;
+				self.createChatLog(logMessage);
 				if (response.result.actionIncomplete === true) {
 					switch (aiText) {
 						case "Please choose a category":
@@ -321,6 +325,26 @@ var self = {
 		}
 
 		return obj != null;
+	},
+	createChatLog: function (logTxt) {
+		var now = new Date();
+		var day = dateFormat(now, "dd-mmm-yyyy");
+		var filename = "public/logs/" + day + ".txt";
+		fs.open(filename, 'r', function (err, fd) {
+			if (err) {
+				fs.writeFile(filename, logTxt, function (err) {
+					if (err) {
+						console.log(err);
+					}
+					console.log("The file was saved!");
+				});
+			} else {
+				fs.appendFile(filename, logTxt, function (err) {
+					if (err) throw err;
+					console.log('Saved!');
+				});
+			}
+		});
 	}
 }
 
