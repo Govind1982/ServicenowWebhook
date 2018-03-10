@@ -55,14 +55,13 @@ var self = {
 		});
 
 		apiai.on('response', (response) => {
+			let aiText = response.result.fulfillment.speech;
+			var logMessage = "\nUser says: "+response.result.resolvedQuery+"\n"+"Bot says: "+aiText;
 			if (response.result.action === "input.welcome") {
 				self.dislplayWelcomeCard(event);
 			} else {
-				let aiText = response.result.fulfillment.speech;
+				
 				let messageData = { text: aiText };
-				//log here with session id, message, user message and bot message
-				var logMessage = "User says:"+response.result.resolvedQuery+"\n"+"Bot says:"+aiText;
-				self.createChatLog(logMessage);
 				if (response.result.actionIncomplete === true) {
 					switch (aiText) {
 						case "Please choose a category":
@@ -89,6 +88,7 @@ var self = {
 					}
 				});
 			}
+			self.createChatLog(logMessage);
 		});
 
 		apiai.on('error', (error) => {
