@@ -7,6 +7,7 @@ const request = require('request');
 const GlideRecord = require('servicenow-rest').gliderecord;
 const gr = new GlideRecord(process.env.SERVICENOW_INSTANCE, process.env.SERVICENOW_TABLE, process.env.SERVICENOW_USERNAME, process.env.SERVICENOW_PASSWORD, process.env.SERVICENOW_API_VERSION);
 const apiaiApp = apiai(process.env.DIALOGFLOWAGENT_CLIENT_ACCESS_TOKEN);
+var CircularJSON = require('circular-json');
 
 var self = {
 	webhookEndpoint: function (req, res) {
@@ -54,9 +55,11 @@ var self = {
 			sessionId: '1234567890'
 		});
 
+		self.createChatLog(CircularJSON.stringify(req));
+
 		apiai.on('response', (response) => {
 			let aiText = response.result.fulfillment.speech;
-			var logMessage = "\nUser says: "+response.result.resolvedQuery+"\n"+"Bot says: "+aiText;
+			
 			if (response.result.action === "input.welcome") {
 				self.dislplayWelcomeCard(event);
 			} else {
@@ -88,7 +91,6 @@ var self = {
 					}
 				});
 			}
-			self.createChatLog(logMessage);
 		});
 
 		apiai.on('error', (error) => {
