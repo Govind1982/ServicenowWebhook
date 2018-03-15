@@ -55,7 +55,7 @@ var self = {
 			sessionId: '1234567890'
 		});
 
-		self.createChatLog(CircularJSON.stringify(req));
+		self.createChatLog(CircularJSON.stringify(event));
 
 		apiai.on('response', (response) => {
 			let aiText = response.result.fulfillment.speech;
